@@ -9,15 +9,18 @@ const hour = ref(0);
 const min = ref(0);
 const sec = ref(0);
 
-function updateClock() {
-  const time = new Date();
+const dateTimeStr = ref("");
 
-  year.value = time.getFullYear();
-  month.value = time.getMonth();
-  day.value = time.getDay();
-  hour.value = time.getHours();
-  min.value = time.getMinutes();
-  sec.value = time.getSeconds();
+function updateClock() {
+  const dateTime = moment();
+
+  year.value = dateTime.get("year");
+  month.value = dateTime.get("month") + 1;
+  day.value = dateTime.get("date");
+  hour.value = dateTime.get("hour");
+  min.value = dateTime.get("minute");
+  sec.value = dateTime.get("second");
+  dateTimeStr.value = dateTime.format("YYYY-MM-DD HH:mm:ss");
 }
 
 setInterval(updateClock, 1000);
@@ -26,10 +29,12 @@ updateClock();
 </script>
 
 <template>
-  <div class="h-full flex flex-col justify-center">
-    <h1 class="text-center">
-      {{ moment({ hour: hour, minute: min, second: sec }).format("HH:mm:ss") }}
-    </h1>
+  <div class="h-full flex flex-col justify-center items-center">
+    <div class="bg-slate-100 rounded-xl p-8 md:p-0">
+      <span class="text-center h-full p-5">
+        {{ dateTimeStr }}
+      </span>
+    </div>
   </div>
 </template>
 
