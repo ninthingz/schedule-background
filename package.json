@@ -1,0 +1,34 @@
+{
+  "name": "schedule-background",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@stylistic/eslint-plugin": "^2.11.0",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "commitlint": "^19.6.0",
+    "commitlint-config-gitmoji": "^2.3.1",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-vue": "^9.31.0",
+    "globals": "^15.12.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "prettier": "3.3.3",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.15.0",
+    "vite": "^5.4.10",
+    "vue-tsc": "^2.1.8"
+  }
+}
