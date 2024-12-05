@@ -1,12 +1,18 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
-export const useCounterStore = defineStore("counter", () => {
-  const count = ref(0);
-  const doubleCount = computed(() => count.value * 2);
-  function increment() {
-    count.value++;
-  }
+interface Habit {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  description: string;
+  completeCount: number;
+  todyCompleted: boolean;
+}
 
-  return { count, doubleCount, increment };
+export const useHabitStore = defineStore("Habit", () => {
+  const habitList = ref<Habit[]>([]);
+
+  return { habitList };
 });
