@@ -24,7 +24,18 @@ export default tseslint.config(
     jsx: true,
     braceStyle: "1tbs",
     arrowParens: "always",
-    commaDangle: "always-multiline",
+    commaDangle: [
+      "error",
+      {
+        arrays: "always-multiline",
+        objects: "always-multiline",
+        imports: "always-multiline",
+        exports: "always-multiline",
+        functions: "never",
+        importAttributes: "always-multiline",
+        dynamicImports: "always-multiline",
+      },
+    ],
   }),
 
   /**
