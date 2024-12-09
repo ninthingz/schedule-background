@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import { useCurrentTimeStore } from "../stores/current-time";
+import { useHabitStore } from "../stores/habit";
+
+const habitStore = useHabitStore();
 
 const currentTimeStore = useCurrentTimeStore();
 </script>
 
 <template>
   <div class="bg-slate-100 rounded-xl p-8 md:p-0">
-    <span class="text-center h-full p-5 select-none">
-      {{ currentTimeStore.dateTimeStr }}
-    </span>
+    <div class="h-full p-5 select-none">
+      <p class="text-center">专注事项:</p>
+      <p class="text-center">
+        {{ habitStore.focusHabit === null ? "无" : habitStore.focusHabit.name }}
+      </p>
+      <p class="text-center">
+        {{ currentTimeStore.dateTimeStr }}
+      </p>
+    </div>
   </div>
 </template>
