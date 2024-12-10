@@ -1,13 +1,64 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useComponentStateStore } from "../stores/component-state";
-import { useHabitStore } from "../stores/habit";
+import { Habit, useHabitStore } from "../stores/habit";
 
 const componentStateStore = useComponentStateStore();
 
 const habitStore = useHabitStore();
 
 const showEditHabitModal = ref(false);
+
+const habitEditing = ref<Habit>({
+  id: 0,
+  name: "",
+  startHour: 0,
+  startMinute: 0,
+  endHour: 0,
+  endMinute: 0,
+  description: "",
+  completeCount: 0,
+  todyCompleted: false,
+});
+
+function newHabit() {
+  habitEditing.value = {
+    id: 0,
+    name: "",
+    startHour: 0,
+    startMinute: 0,
+    endHour: 0,
+    endMinute: 0,
+    description: "",
+    completeCount: 0,
+    todyCompleted: false,
+  };
+  showEditHabitModal.value = true;
+}
+
+function saveEditHabit() {
+  if (habitEditing.value.id === 0) {
+    habitStore.addHabit(habitEditing.value);
+  }
+  showEditHabitModal.value = false;
+}
+
+function saveHabitList() {
+  habitStore.saveHabitList();
+  componentStateStore.showHabitTableModal = false;
+}
+
+function modifyHabit(habit: Habit) {
+  habitEditing.value = habit;
+  showEditHabitModal.value = true;
+}
+
+function deleteHabit(habit: Habit) {
+  habitStore.habitList.splice(
+    habitStore.habitList.findIndex((h) => h.id === habit.id),
+    1
+  );
+}
 </script>
 
 <template>
@@ -15,33 +66,46 @@ const showEditHabitModal = ref(false);
     <div class="modal-box w-1/2 max-w-full">
       <div class="flex flex-col justify-center items-center">
         <div class="flex w-full justify-center mb-2">
-          <span class="p-3 w-24 text-end"> ID: </span>
+          <span class="p-3 w-32 text-end"> Name: </span>
           <input
-            type="text"
-            placeholder="ID"
-            class="input input-bordered w-full max-w-xs"
-          />
-        </div>
-        <div class="flex w-full justify-center mb-2">
-          <span class="p-3 w-24 text-end"> Name: </span>
-          <input
+            v-model="habitEditing.name"
             type="text"
             placeholder="Name"
             class="input input-bordered w-full max-w-xs"
           />
         </div>
         <div class="flex w-full justify-center mb-2">
-          <span class="p-3 w-24 text-end"> StartTime: </span>
+          <span class="p-3 text-end w-32"> StartHour: </span>
           <input
-            type="text"
+            v-model="habitEditing.startHour"
+            type="number"
+            placeholder="StartTime"
+            class="input input-bordered w-full max-w-xs"
+          />
+        </div>
+        <div class="flex w-full justify-center mb-2">
+          <span class="p-3 w-32 text-end"> StartMinute: </span>
+          <input
+            v-model="habitEditing.startMinute"
+            type="number"
+            placeholder="StartTime"
+            class="input input-bordered w-full max-w-xs"
+          />
+        </div>
+        <div class="flex w-full justify-center mb-2">
+          <span class="p-3 w-32 text-end"> EndHour: </span>
+          <input
+            v-model="habitEditing.endHour"
+            type="number"
             placeholder="StartTime"
             class="input input-bordered w-full max-w-xs"
           />
         </div>
         <div class="flex w-full justify-center">
-          <span class="p-3 w-24 text-end"> EndTime: </span>
+          <span class="p-3 w-32 text-end"> EndMinute: </span>
           <input
-            type="text"
+            v-model="habitEditing.endMinute"
+            type="number"
             placeholder="EndTime"
             class="input input-bordered w-full max-w-xs"
           />
@@ -50,7 +114,7 @@ const showEditHabitModal = ref(false);
       <div class="modal-action">
         <form method="dialog">
           <button
-            @click="showEditHabitModal = false"
+            @click="saveEditHabit"
             class="btn btn-outline btn-primary mr-2"
           >
             Save
@@ -66,10 +130,7 @@ const showEditHabitModal = ref(false);
   >
     <div class="modal-box w-3/4 max-w-full">
       <div>
-        <button
-          class="btn btn-outline btn-primary"
-          @click="showEditHabitModal = true"
-        >
+        <button class="btn btn-outline btn-primary" @click="newHabit">
           New
         </button>
         <table class="table">
@@ -95,21 +156,29 @@ const showEditHabitModal = ref(false);
                 {{
                   habit.startHour.toString().padStart(2, "0") +
                   ":" +
-                  habit.startMin.toString().padStart(2, "0")
+                  habit.startMinute.toString().padStart(2, "0")
                 }}
               </td>
               <td>
                 {{
                   habit.endHour.toString().padStart(2, "0") +
                   ":" +
-                  habit.endMin.toString().padStart(2, "0")
+                  habit.endMinute.toString().padStart(2, "0")
                 }}
               </td>
               <td>
-                <button class="btn btn-outline btn-secondary mr-2">
+                <button
+                  @click="modifyHabit(habit)"
+                  class="btn btn-outline btn-secondary mr-2"
+                >
                   Modify
                 </button>
-                <button class="btn btn-outline btn-warning">Delete</button>
+                <button
+                  @click="deleteHabit(habit)"
+                  class="btn btn-outline btn-warning"
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           </tbody>
@@ -118,13 +187,16 @@ const showEditHabitModal = ref(false);
       <div class="modal-action">
         <form method="dialog">
           <button
-            @click="componentStateStore.showHabitTableModal = false"
+            @click="saveHabitList"
             class="btn btn-outline btn-primary mr-2"
           >
             Save
           </button>
           <button
-            @click="componentStateStore.showHabitTableModal = false"
+            @click="
+              habitStore.loadHabitList();
+              componentStateStore.showHabitTableModal = false;
+            "
             class="btn"
           >
             Close

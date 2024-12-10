@@ -3,5 +3,12 @@ import { ref } from "vue";
 
 export const useComponentStateStore = defineStore("componentState", () => {
   const showHabitTableModal = ref(false);
-  return { showHabitTableModal };
+  const showTimeClockComponent = ref(true);
+  const showTimeRouletteComponent = ref(true);
+
+  return {
+    showHabitTableModal,
+    showTimeClockComponent,
+    showTimeRouletteComponent,
+  };
 });

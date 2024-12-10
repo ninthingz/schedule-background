@@ -2,55 +2,53 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export interface Habit {
-  id: string;
+  id: number;
   name: string;
   startHour: number;
-  startMin: number;
+  startMinute: number;
   endHour: number;
-  endMin: number;
+  endMinute: number;
   description: string;
   completeCount: number;
   todyCompleted: boolean;
 }
 
 export const useHabitStore = defineStore("Habit", () => {
-  const habitList = ref<Habit[]>([
-    {
-      id: "1",
-      name: "上班",
-      startHour: 8,
-      startMin: 0,
-      endHour: 12,
-      endMin: 0,
-      description: "上班",
-      completeCount: 0,
-      todyCompleted: false,
-    },
-    {
-      id: "2",
-      name: "午休",
-      startHour: 12,
-      startMin: 0,
-      endHour: 13,
-      endMin: 30,
-      description: "午休",
-      completeCount: 0,
-      todyCompleted: false,
-    },
-    {
-      id: "3",
-      name: "上班",
-      startHour: 13,
-      startMin: 30,
-      endHour: 17,
-      endMin: 30,
-      description: "上班",
-      completeCount: 0,
-      todyCompleted: false,
-    },
-  ]);
+  const habitList = ref<Habit[]>([]);
+
+  let loaded = false;
 
   const focusHabit = ref<Habit | null>(null);
 
-  return { habitList, focusHabit };
+  const loadHabitList = () => {
+    const habitListJsonStr = localStorage.getItem("habitList");
+    if (habitListJsonStr) {
+      habitList.value = JSON.parse(habitListJsonStr);
+      sortByStartTime();
+    }
+  };
+
+  const saveHabitList = () => {
+    sortByStartTime();
+    localStorage.setItem("habitList", JSON.stringify(habitList.value));
+  };
+
+  const sortByStartTime = () => {
+    habitList.value.sort((a, b) => {
+      return (
+        a.startHour * 60 + a.startMinute - (b.startHour * 60 + b.startMinute)
+      );
+    });
+  };
+
+  const addHabit = (habit: Habit) => {
+    habit.id = habitList.value.length + 1;
+    habitList.value.push(habit);
+  };
+
+  if (!loaded) {
+    loaded = true;
+    loadHabitList();
+  }
+  return { habitList, focusHabit, loadHabitList, saveHabitList, addHabit };
 });

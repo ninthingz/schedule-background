@@ -13,6 +13,19 @@ const timeRoulette = ref<HTMLCanvasElement>();
 const timeRouletteCtx = ref<CanvasRenderingContext2D>();
 const componentStateStore = useComponentStateStore();
 
+const eyeOpen = ref(true);
+
+watch(eyeOpen, () => {
+  if (eyeOpen.value) {
+    componentStateStore.showTimeClockComponent = true;
+    componentStateStore.showTimeRouletteComponent = true;
+    draw();
+  } else {
+    componentStateStore.showTimeClockComponent = false;
+    componentStateStore.showTimeRouletteComponent = false;
+  }
+});
+
 onMounted(() => {
   if (timeRoulette.value) {
     const dpr = window.devicePixelRatio;
@@ -34,13 +47,13 @@ function minChange() {
     ) {
       if (
         currentTimeStore.hour === habit.startHour &&
-        currentTimeStore.min < habit.startMin
+        currentTimeStore.min < habit.startMinute
       ) {
         return;
       }
       if (
         currentTimeStore.hour === habit.endHour &&
-        currentTimeStore.min >= habit.endMin
+        currentTimeStore.min >= habit.endMinute
       ) {
         return;
       }
@@ -54,13 +67,13 @@ function minChange() {
       ) {
         if (
           currentTimeStore.hour === habit.startHour &&
-          currentTimeStore.min < habit.startMin
+          currentTimeStore.min < habit.startMinute
         ) {
           return;
         }
         if (
           currentTimeStore.hour === habit.endHour &&
-          currentTimeStore.min >= habit.endMin
+          currentTimeStore.min >= habit.endMinute
         ) {
           return;
         }
@@ -205,24 +218,26 @@ function draw() {
 
     const yestodayHabitStartHeight =
       hourStartHeight +
-      (yestodayHabitStartHour - hourStart + habit.startMin / 60) * hourHeight;
+      (yestodayHabitStartHour - hourStart + habit.startMinute / 60) *
+        hourHeight;
     const yestodayHabitEndHeight =
       hourStartHeight +
-      (yestodayHabitEndHour - hourStart + habit.endMin / 60) * hourHeight;
+      (yestodayHabitEndHour - hourStart + habit.endMinute / 60) * hourHeight;
 
     const todayHabitStartHeight =
       hourStartHeight +
-      (todayHabitStartHour - hourStart + habit.startMin / 60) * hourHeight;
+      (todayHabitStartHour - hourStart + habit.startMinute / 60) * hourHeight;
     const todayHabitEndHeight =
       hourStartHeight +
-      (todayHabitEndHour - hourStart + habit.endMin / 60) * hourHeight;
+      (todayHabitEndHour - hourStart + habit.endMinute / 60) * hourHeight;
 
     const tomorrowHabitStartHeight =
       hourStartHeight +
-      (tomorrowHabitStartHour - hourStart + habit.startMin / 60) * hourHeight;
+      (tomorrowHabitStartHour - hourStart + habit.startMinute / 60) *
+        hourHeight;
     const tomorrowHabitEndHeight =
       hourStartHeight +
-      (tomorrowHabitEndHour - hourStart + habit.endMin / 60) * hourHeight;
+      (tomorrowHabitEndHour - hourStart + habit.endMinute / 60) * hourHeight;
 
     timeRouletteCtx.value!.fillStyle = lingradList[i % 3];
     i++;
@@ -280,8 +295,9 @@ function draw() {
 <template>
   <div style="width: 15vw; height: 70vh">
     <div class="float-right pr-1">
-      <button class="btn btn-ghost btn-xs h-6">
+      <button @click="eyeOpen = !eyeOpen" class="btn btn-ghost btn-xs h-6">
         <svg
+          v-if="eyeOpen"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -298,6 +314,21 @@ function draw() {
             stroke-linecap="round"
             stroke-linejoin="round"
             d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+          />
+        </svg>
+        <svg
+          v-if="!eyeOpen"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
           />
         </svg>
       </button>
@@ -326,6 +357,11 @@ function draw() {
         </svg>
       </button>
     </div>
-    <canvas ref="timeRoulette" class="w-full h-hull"> </canvas>
+    <canvas
+      v-show="componentStateStore.showTimeRouletteComponent"
+      ref="timeRoulette"
+      class="w-full h-hull"
+    >
+    </canvas>
   </div>
 </template>
