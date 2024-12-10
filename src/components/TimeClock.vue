@@ -16,7 +16,7 @@ const componentStateStore = useComponentStateStore();
     class="rounded-xl p-0 text-black"
     style="background-color: rgba(255, 255, 255, 0.2)"
   >
-    <div class="h-full p-5 select-none" style="font-size: 2vh">
+    <div class="h-full p-5 select-none" style="font-size: 1.4vh">
       <p class="text-center">专注事项:</p>
       <p class="text-center">
         {{ habitStore.focusHabit === null ? "无" : habitStore.focusHabit.name }}

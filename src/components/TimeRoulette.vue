@@ -13,7 +13,7 @@ const timeRoulette = ref<HTMLCanvasElement>();
 const timeRouletteCtx = ref<CanvasRenderingContext2D>();
 const componentStateStore = useComponentStateStore();
 
-const eyeOpen = ref(true);
+const eyeOpen = ref(false);
 
 watch(eyeOpen, () => {
   if (eyeOpen.value) {
@@ -30,7 +30,8 @@ onMounted(() => {
   if (timeRoulette.value) {
     const dpr = window.devicePixelRatio;
     timeRoulette.value.width = window.innerWidth * 0.15 * dpr;
-    timeRoulette.value.height = window.innerHeight * 0.7 * dpr - 30;
+    timeRoulette.value.height = window.innerHeight * 0.7 * dpr - 32;
+    console.log(timeRoulette.value.width, timeRoulette.value.height);
     timeRouletteCtx.value = timeRoulette.value.getContext("2d")!;
     draw();
   }
@@ -293,7 +294,7 @@ function draw() {
 </script>
 
 <template>
-  <div class="rounded-xl p-1" style="width: 15vw; height: 73vh">
+  <div class="rounded-xl" style="width: 15vw; height: 73vh">
     <div class="float-right pr-1">
       <button @click="eyeOpen = !eyeOpen" class="btn btn-ghost btn-xs h-6">
         <svg
