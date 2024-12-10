@@ -30,7 +30,7 @@ onMounted(() => {
   if (timeRoulette.value) {
     const dpr = window.devicePixelRatio;
     timeRoulette.value.width = window.innerWidth * 0.15 * dpr;
-    timeRoulette.value.height = window.innerHeight * 0.7 * dpr;
+    timeRoulette.value.height = window.innerHeight * 0.7 * dpr - 30;
     timeRouletteCtx.value = timeRoulette.value.getContext("2d")!;
     draw();
   }
@@ -95,8 +95,8 @@ function draw() {
     timeRoulette.value.width,
     timeRoulette.value.height
   );
-  const leftX = 40;
-  const rightX = timeRoulette.value.width - 10;
+  const leftX = 20;
+  const rightX = timeRoulette.value.width - 20;
   const topY = 10;
   const bottomY = timeRoulette.value.height - 10;
   const middleY = timeRoulette.value.height / 2;
@@ -115,54 +115,6 @@ function draw() {
       hourStart = 23;
     }
   }
-
-  const lingrad = timeRouletteCtx.value.createLinearGradient(
-    timeRoulette.value.width / 2,
-    0,
-    timeRoulette.value.width / 2,
-    timeRoulette.value.height
-  );
-  lingrad.addColorStop(0, "rgba(0,0,0,0.3)");
-  lingrad.addColorStop(0.5, "#000");
-  lingrad.addColorStop(1, "rgba(0,0,0,0.3)");
-  timeRouletteCtx.value.strokeStyle = lingrad;
-  timeRouletteCtx.value.fillStyle = lingrad;
-
-  for (
-    let { height, hour } = { height: hourStartHeight, hour: hourStart };
-    height < bottomY;
-    height += hourHeight
-  ) {
-    timeRouletteCtx.value.beginPath();
-    timeRouletteCtx.value.moveTo(leftX, height);
-    timeRouletteCtx.value.lineTo(rightX - 35, height);
-
-    timeRouletteCtx.value.moveTo(rightX - 10, height);
-    timeRouletteCtx.value.lineTo(rightX, height);
-
-    timeRouletteCtx.value.lineWidth = 1;
-    timeRouletteCtx.value.stroke();
-
-    timeRouletteCtx.value.font = "16px Arial";
-    timeRouletteCtx.value.fillText(
-      hour.toString().padStart(2, "0"),
-      rightX - 30,
-      height + 5
-    );
-    hour = (hour + 1) % 24;
-  }
-
-  timeRouletteCtx.value.beginPath();
-  timeRouletteCtx.value.moveTo(leftX, topY);
-  timeRouletteCtx.value.lineTo(leftX, bottomY);
-  timeRouletteCtx.value.lineWidth = 2;
-  timeRouletteCtx.value.stroke();
-
-  timeRouletteCtx.value.beginPath();
-  timeRouletteCtx.value.moveTo(rightX, topY);
-  timeRouletteCtx.value.lineTo(rightX, bottomY);
-  timeRouletteCtx.value.lineWidth = 2;
-  timeRouletteCtx.value.stroke();
 
   const lingrad0 = timeRouletteCtx.value.createLinearGradient(
     timeRoulette.value.width / 2,
@@ -283,6 +235,54 @@ function draw() {
     );
   });
 
+  const lingrad = timeRouletteCtx.value.createLinearGradient(
+    timeRoulette.value.width / 2,
+    0,
+    timeRoulette.value.width / 2,
+    timeRoulette.value.height
+  );
+  lingrad.addColorStop(0, "rgba(0,0,0,0.3)");
+  lingrad.addColorStop(0.5, "#000");
+  lingrad.addColorStop(1, "rgba(0,0,0,0.3)");
+  timeRouletteCtx.value.strokeStyle = lingrad;
+  timeRouletteCtx.value.fillStyle = lingrad;
+
+  for (
+    let { height, hour } = { height: hourStartHeight, hour: hourStart };
+    height < bottomY;
+    height += hourHeight
+  ) {
+    timeRouletteCtx.value.beginPath();
+    timeRouletteCtx.value.moveTo(leftX, height);
+    timeRouletteCtx.value.lineTo(rightX - 35, height);
+
+    timeRouletteCtx.value.moveTo(rightX - 10, height);
+    timeRouletteCtx.value.lineTo(rightX, height);
+
+    timeRouletteCtx.value.lineWidth = 1;
+    timeRouletteCtx.value.stroke();
+
+    timeRouletteCtx.value.font = "16px Arial";
+    timeRouletteCtx.value.fillText(
+      hour.toString().padStart(2, "0"),
+      rightX - 30,
+      height + 5
+    );
+    hour = (hour + 1) % 24;
+  }
+
+  timeRouletteCtx.value.beginPath();
+  timeRouletteCtx.value.moveTo(leftX, topY);
+  timeRouletteCtx.value.lineTo(leftX, bottomY);
+  timeRouletteCtx.value.lineWidth = 2;
+  timeRouletteCtx.value.stroke();
+
+  timeRouletteCtx.value.beginPath();
+  timeRouletteCtx.value.moveTo(rightX, topY);
+  timeRouletteCtx.value.lineTo(rightX, bottomY);
+  timeRouletteCtx.value.lineWidth = 2;
+  timeRouletteCtx.value.stroke();
+
   timeRouletteCtx.value.beginPath();
   timeRouletteCtx.value.moveTo(leftX + 2, middleY);
   timeRouletteCtx.value.lineTo(rightX - 50, middleY);
@@ -293,7 +293,7 @@ function draw() {
 </script>
 
 <template>
-  <div style="width: 15vw; height: 70vh">
+  <div class="rounded-xl p-1" style="width: 15vw; height: 73vh">
     <div class="float-right pr-1">
       <button @click="eyeOpen = !eyeOpen" class="btn btn-ghost btn-xs h-6">
         <svg
@@ -361,6 +361,7 @@ function draw() {
       v-show="componentStateStore.showTimeRouletteComponent"
       ref="timeRoulette"
       class="w-full h-hull"
+      style="background-color: rgba(255, 255, 255, 0.2)"
     >
     </canvas>
   </div>

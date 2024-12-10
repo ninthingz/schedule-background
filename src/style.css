@@ -4,6 +4,10 @@
 
 #app {
   height: 100vh;
+  background-image: url("assets/1_pantone_collab_dark.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 :root:has(
